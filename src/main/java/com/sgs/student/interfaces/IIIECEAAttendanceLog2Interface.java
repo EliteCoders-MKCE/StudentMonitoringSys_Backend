@@ -3,9 +3,9 @@ package com.sgs.student.interfaces;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.sgs.student.models.AttendanceLog1;
+import com.sgs.student.models.IIIECEAAttendanceLog2;
 
 @Repository
-public interface AttendanceLog1Interface extends JpaRepository <AttendanceLog1,String>{
+public interface IIIECEAAttendanceLog2Interface extends JpaRepository<IIIECEAAttendanceLog2,String> {
 
 }

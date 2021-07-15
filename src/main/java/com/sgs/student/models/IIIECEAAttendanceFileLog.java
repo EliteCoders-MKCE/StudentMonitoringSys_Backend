@@ -9,24 +9,24 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="attendance_file_log")
+@Table(name="iii_ece_a_attendance_file_log")
 
-public class AttendanceFileLog {
+public class IIIECEAAttendanceFileLog {
 	@Id
 	@Column(name="attendance_id")
 	private String attendanceId;
-	@Column(name="attendance_file")
+	@Column(name="file")
 	@Lob
 	private Blob attendanceFile;
 	@Column(name="date_time")
 	private String dateTime;
 	
 	
-	public AttendanceFileLog() {
+	public IIIECEAAttendanceFileLog() {
 		super();
 		
 	}
-	public AttendanceFileLog(String attendanceId, Blob attendanceFile, String dateTime) {
+	public IIIECEAAttendanceFileLog(String attendanceId, Blob attendanceFile, String dateTime) {
 		super();
 		this.attendanceId = attendanceId;
 		this.attendanceFile = attendanceFile;

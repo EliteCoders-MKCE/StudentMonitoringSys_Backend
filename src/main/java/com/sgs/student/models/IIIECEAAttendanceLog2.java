@@ -6,33 +6,58 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="attendance_log_2")
-public class AttendanceLog2 {
+@Table(name="iii_ece_a_attendance_log_2")
+public class IIIECEAAttendanceLog2 {
 	@Id
-	@Column(name="register_no")
+	@Column(name="registerNo")
 	private String registerNo;
-	@Column(name="attendance_status")
+	@Column(name="name")
+	private String name;
+	@Column(name="status")
 	private String attendanceStatus;
 	
 	
-	public AttendanceLog2() {
+	public IIIECEAAttendanceLog2() {
 		super();
 		
 	}
-	public AttendanceLog2(String registerNo, String attendanceStatus) {
+
+	
+
+	public IIIECEAAttendanceLog2(String registerNo, String name, String attendanceStatus) {
 		super();
 		this.registerNo = registerNo;
+		this.name = name;
 		this.attendanceStatus = attendanceStatus;
 	}
+
+
+
 	public String getRegisterNo() {
 		return registerNo;
 	}
+
+
 	public void setRegisterNo(String registerNo) {
 		this.registerNo = registerNo;
 	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
 	public String getAttendanceStatus() {
 		return attendanceStatus;
 	}
+
+
 	public void setAttendanceStatus(String attendanceStatus) {
 		this.attendanceStatus = attendanceStatus;
 	}
