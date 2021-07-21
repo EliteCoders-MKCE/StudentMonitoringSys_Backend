@@ -10,15 +10,15 @@ import javax.persistence.Table;
 
 public class IIIECEAStudentDetails {
 	@Id
-	@Column(name="registerNo")
+	@Column(name="register_no")
 	private String registerNo;
 	@Column(name="name")
 	private String name;
 	@Column(name="gender")
 	private String gender;
-	@Column(name="eMail")
+	@Column(name="e_mail")
 	private String mail;
-	@Column(name="deptClass")
+	@Column(name="dept_class")
 	private String deptClassGroup;
 	
 	

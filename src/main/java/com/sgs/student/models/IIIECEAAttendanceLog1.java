@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Table(name="iii_ece_a_attendance_log_1")
 public class IIIECEAAttendanceLog1 {
 	@Id
-	@Column(name="registerNo")
+	@Column(name="register_no")
 	private String registerNo;
 	@Column(name="name")
 	private String name;
