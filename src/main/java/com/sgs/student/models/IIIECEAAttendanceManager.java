@@ -11,6 +11,10 @@ public class IIIECEAAttendanceManager {
 	@Id
 	@Column(name="attendance_id")
 	private String attendanceId;
+	@Column(name="attendance_title")
+	private String attendanceTitle;
+	@Column(name="attendance_desc")
+	private String attendanceDesc;
 	@Column(name="date")
 	private String date;
 	@Column(name="type")
@@ -33,10 +37,12 @@ public class IIIECEAAttendanceManager {
 	}
 
 
-	public IIIECEAAttendanceManager(String attendanceId, String date, String type, String startTime, String endTime,
-			String resultLog, String status, String staffId) {
+	public IIIECEAAttendanceManager(String attendanceId, String attendanceTitle, String attendanceDesc, String date,
+			String type, String startTime, String endTime, String resultLog, String status, String staffId) {
 		super();
 		this.attendanceId = attendanceId;
+		this.attendanceTitle = attendanceTitle;
+		this.attendanceDesc = attendanceDesc;
 		this.date = date;
 		this.type = type;
 		this.startTime = startTime;
@@ -54,6 +60,26 @@ public class IIIECEAAttendanceManager {
 
 	public void setAttendanceId(String attendanceId) {
 		this.attendanceId = attendanceId;
+	}
+
+
+	public String getAttendanceTitle() {
+		return attendanceTitle;
+	}
+
+
+	public void setAttendanceTitle(String attendanceTitle) {
+		this.attendanceTitle = attendanceTitle;
+	}
+
+
+	public String getAttendanceDesc() {
+		return attendanceDesc;
+	}
+
+
+	public void setAttendanceDesc(String attendanceDesc) {
+		this.attendanceDesc = attendanceDesc;
 	}
 
 
@@ -125,6 +151,6 @@ public class IIIECEAAttendanceManager {
 	public void setStaffId(String staffId) {
 		this.staffId = staffId;
 	}
-	
+
 	
 }
