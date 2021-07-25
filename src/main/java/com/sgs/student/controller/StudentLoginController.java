@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,21 +18,12 @@ import com.sgs.student.interfaces.StudentLoginInterface;
 import com.sgs.student.models.StudentLogin;
 
 @RestController
+@CrossOrigin(origins="http://localhost:3000/")
 @RequestMapping("api/student")
 public class StudentLoginController {
 	@Autowired
 	private StudentLoginInterface studentLoginInterface;
 	
-	@GetMapping("all")
-	public List <StudentLogin>getall()
-	{
-		return studentLoginInterface.findAll();
-	}
-	@GetMapping("{id}")
-	public Optional <StudentLogin> GetById(@PathVariable(value="id")String StudentId)
-	{
-		return this.studentLoginInterface.findById(StudentId);
-	}
 	
 	@PostMapping("login")
 	public HashMap login (@RequestParam("register_no")String registerNo , @RequestParam("password")String password)
@@ -41,7 +33,7 @@ public class StudentLoginController {
 	{
 		 HashMap<String,String> response = new HashMap<String,String>();
          response.put("registerNo",student.getRegisterNo());
-         response.put("class_group", student.getClassGroup());
+         response.put("classGroup", student.getClassGroup());
          response.put("loginStatus","true");
          
          return response;
