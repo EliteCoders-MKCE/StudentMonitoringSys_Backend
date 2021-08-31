@@ -18,12 +18,15 @@ import com.sgs.student.interfaces.StudentLoginInterface;
 import com.sgs.student.models.StudentLogin;
 
 @RestController
-@CrossOrigin(origins="http://localhost:3000/")
+@CrossOrigin
 @RequestMapping("api/student")
 public class StudentLoginController {
 	@Autowired
 	private StudentLoginInterface studentLoginInterface;
 	
+	// CHANGE PASSWORD METHOD - POST /reset
+	
+	// FORGOT PASSWORD METHOD - POST /forgot
 	
 	@PostMapping("login")
 	public HashMap login (@RequestParam("register_no")String registerNo , @RequestParam("password")String password)

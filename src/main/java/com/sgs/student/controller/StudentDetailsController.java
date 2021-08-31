@@ -15,7 +15,7 @@ import com.sgs.student.database.DatabaseConnector;
 import com.sgs.student.database.ResultSetSerialiser;
 
 @RestController
-@CrossOrigin(origins="http://localhost:3000/")
+@CrossOrigin
 @RequestMapping("/api/student-details")
 public class StudentDetailsController {
 	
@@ -27,6 +27,22 @@ public class StudentDetailsController {
 		{
 			db.createConnection();
 			ResultSet result = db.getValue("SELECT * FROM "+classGroup+"_studentdetails");
+			ResultSetSerialiser rss = new ResultSetSerialiser();
+			return rss.convert(result);
+			
+		}
+		catch(RuntimeException e){return null;}
+		finally{db.closeConnection();}
+	}
+	
+	@GetMapping("/get")
+	public ArrayList<HashMap<String,Object>> getDetails(@RequestParam("class_group")String classGroup,@RequestParam("register_no")String registerNo) throws SQLException
+	{
+		DatabaseConnector db = new DatabaseConnector(); 
+		try
+		{
+			db.createConnection();
+			ResultSet result = db.getValue("SELECT * FROM "+classGroup+"_studentdetails WHERE register_no='"+registerNo+"'");
 			ResultSetSerialiser rss = new ResultSetSerialiser();
 			return rss.convert(result);
 			
