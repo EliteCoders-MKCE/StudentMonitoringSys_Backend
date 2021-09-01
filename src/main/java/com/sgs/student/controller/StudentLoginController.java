@@ -1,53 +1,64 @@
 package com.sgs.student.controller;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.sgs.student.exception.ResourceNotFoundException;
-import com.sgs.student.interfaces.StudentLoginInterface;
-import com.sgs.student.models.StudentLogin;
+import com.sgs.student.database.DatabaseConnector;
 
 @RestController
 @CrossOrigin
 @RequestMapping("api/student")
 public class StudentLoginController {
-	@Autowired
-	private StudentLoginInterface studentLoginInterface;
 	
 	// CHANGE PASSWORD METHOD - POST /reset
 	
 	// FORGOT PASSWORD METHOD - POST /forgot
 	
-	@PostMapping("login")
-	public HashMap login (@RequestParam("register_no")String registerNo , @RequestParam("password")String password)
+	@PostMapping("/login")
+	public  HashMap<String,String> login(@RequestParam("register_no")String registerNo,@RequestParam("password")String password)throws SQLException
 	{
-	StudentLogin student = this.studentLoginInterface.findById(registerNo).orElseThrow(()->new ResourceNotFoundException("User Not Found"));
-	if(password.equals(student.getPassword())&& registerNo == student.getRegisterNo())
-	{
+		DatabaseConnector db = new DatabaseConnector();
+		db.createConnection();
+		try {
+			
+			
+			 ResultSet result =db.getValue("SELECT * FROM student_login WHERE register_no='"+registerNo+"'");
+			 while(result.next()) {
+				 String get_password = result.getString("password");
+				 String classgroup = result.getString("class_group");
+				 
+				 
+				 if(password.equals(get_password))
+				 {
+					 HashMap<String,String> hash = new HashMap<String,String>();
+					 hash.put("registerNo",registerNo);
+					 hash.put("classGroup", classgroup);
+					 hash.put("loginStatus","true");
+					return hash;
+				 } 
+					 
+					 
+			 }
+			 		
+			
+		}catch(RuntimeException e) {
+			return null;
+			
+		}
+		finally {
+			db.closeConnection();
+		}
 		 HashMap<String,String> response = new HashMap<String,String>();
-         response.put("registerNo",student.getRegisterNo());
-         response.put("classGroup", student.getClassGroup());
-         response.put("loginStatus","true");
-         
+         response.put("loginStatus","false");
          return response;
-	}
-         else
-         {
-        	 HashMap<String,String> response = new HashMap<String,String>();
-             response.put("loginStatus","false");
-             return response;
-         }
-         
-	
+			
+		
+		
 	}
 }
