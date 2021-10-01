@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,7 +41,55 @@ import org.springframework.core.io.Resource;
 @CrossOrigin
 @RequestMapping("/api/attn")
 public class AttendanceManagerController {
+
 	
+	/*
+	 * Continuous Attendance - Counter and status manager
+	 * */
+	@GetMapping("/count-cont")
+	public String countContinuous(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId,@RequestParam("register_no")String registerNo) throws SQLException
+	{
+		try
+		{
+			DatabaseConnector db = new DatabaseConnector();
+			db.createConnection();
+			ResultSetSerialiser rss = new ResultSetSerialiser();
+			ArrayList<HashMap<String,Object>> arr= rss.convert(db.getValue("SELECT * FROM "+classGroup+"_attendance_manager WHERE attendance_id='"+attnId+"'"));
+			for(HashMap<String,Object> hashmap:arr)
+			{
+				int hrs  = LocalDateTime.now().getHour();
+				int min = LocalDateTime.now().getMinute();
+				int sec = LocalDateTime.now().getSecond();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		        Date date = new Date();
+				if(hashmap.get("date").equals(dateFormat.format(date)))
+				{
+					LocalTime target = LocalTime.parse((String.format("%02d:%02d:%02d",hrs,min,sec))) ;
+					Boolean targetInZone = ( 
+					    target.isAfter( LocalTime.parse((String) hashmap.get("start_time")) ) 
+					    && 
+					    target.isBefore( LocalTime.parse((String) hashmap.get("end_time")) ) 
+					) ;
+					db.query("UPDATE "+classGroup+"_attncount SET count=count+1 WHERE register_no='"+registerNo+"'");
+					if(targetInZone)
+							return "continue";
+					else
+						return "stop";
+					
+				}
+			}
+			return "Nothing found";
+		}
+		catch(RuntimeException e)
+		{
+			return "Unexpected error";
+		}
+	}
+	
+	
+	/*
+	 *  Live attendance or Current State of attendance  will be returned
+	 * */
 	@GetMapping("/get-liveatn")
 	public ArrayList<HashMap<String,Object>> getAttendance(@RequestParam("result_log")String resultLog) throws SQLException
 	{
@@ -61,6 +110,10 @@ public class AttendanceManagerController {
 		}
 	}
 	
+	
+	/*
+	 * Delete the file log from db with file_id[date_time] given
+	 * */
 	@GetMapping("/delete-log")
 	public String deleteLog(@RequestParam("class_group")String classGroup,@RequestParam("file_id")String fileId) throws SQLException
 	{
@@ -80,6 +133,10 @@ public class AttendanceManagerController {
 		}
 	}
 	
+	
+	/*
+	 * Downloads the reqd file with given file id
+	 * */
 	@GetMapping("/download")
 	public ResponseEntity<Resource> downloadAttendanceFile(@RequestParam("class_group")String classGroup,@RequestParam("file_id")String fileId) throws SQLException, IOException
 	{
@@ -129,6 +186,10 @@ public class AttendanceManagerController {
 		return null;
 	}
 	
+	
+	/*
+	 * Deletes an attendance from attendance manager
+	 * */
 	@PostMapping("/delete")
 	public String removeAtendance(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId) throws SQLException
 	{
@@ -150,6 +211,10 @@ public class AttendanceManagerController {
 		}
 	}
 	
+	
+	/*
+	 * Retrieves a single attendance from attendance manager
+	 * */
 	@GetMapping("/get")
 	public ArrayList<HashMap<String,Object>> getAttn(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId) throws SQLException
 	{
@@ -170,6 +235,10 @@ public class AttendanceManagerController {
 		}
 	}
 	
+	
+	/*
+	 * Retrieves all attendances from attendance manager
+	 * */
 	@GetMapping("/get-all")
 	public ArrayList<HashMap<String,Object>> getAllAttendance(@RequestParam("class_group")String classGroup) throws SQLException
 	{	
@@ -192,14 +261,57 @@ public class AttendanceManagerController {
 		}
 	}
 	
+	
+	/*
+	 * Updates status in manager, resets db values if reqd  if its continuous 
+	 * */
 	@PostMapping("/update-status")
-	public String updateStatus(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId,@RequestParam("status")String status) throws SQLException
+	public String updateStatus(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId,@RequestParam("status")String status) throws SQLException, ParseException
 	{
 		try
 		{
 			DatabaseConnector db = new DatabaseConnector();
 			db.createConnection();
-			db.query("UPDATE "+classGroup+"_attendance_manager SET status='"+status+"' WHERE attendance_id='"+attnId+"'");
+				ResultSetSerialiser rss = new ResultSetSerialiser();
+				ArrayList<HashMap<String,Object>> arr= rss.convert(db.getValue("SELECT * FROM "+classGroup+"_attendance_manager WHERE attendance_id='"+attnId+"'"));
+				for(HashMap<String,Object> hashmap:arr)
+				{
+					if(hashmap.get("type").equals("cont"))
+					{
+						if(status.equals("false"))
+						{
+							int minval=0;
+							ResultSet rslt = db.getValue("SELECT count FROM "+classGroup+"_attncount WHERE register_no='minval'");
+							while(rslt.next())
+							{
+								minval = rslt.getInt("count"); 
+							}
+							ArrayList<HashMap<String,Object>> arr1= rss.convert(db.getValue("SELECT register_no FROM "+classGroup+"_attncount WHERE count >= "+minval+""));
+							for(HashMap<String,Object> hash:arr1)
+								db.query("UPDATE "+hashmap.get("result_log")+" SET status='present' WHERE register_no='"+hash.get("register_no")+"'");
+							db.query("UPDATE "+classGroup+"_attendance_manager SET status='"+status+"' WHERE attendance_id='"+attnId+"'");
+							return "cont-attendance ready to generate report..";
+						}
+						else if(status.equals("true"))
+						{
+							SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+							Date start = format.parse((String)hashmap.get("start_time"));
+							Date end = format.parse((String)hashmap.get("end_time"));
+							long difference = end.getTime()-start.getTime();
+							long mins = difference/60000;
+							mins /= 2;
+							int padding = (int)(mins*(25.0f/100.0f));
+							int minval = (int)mins-padding;
+							db.query("UPDATE "+classGroup+"_attncount SET count=0 WHERE 1");
+							db.query("UPDATE "+hashmap.get("result_log")+" SET status='absent' WHERE 1");
+							db.query("UPDATE "+classGroup+"_attncount SET count="+minval+" WHERE register_no='minval'");
+							db.query("UPDATE "+classGroup+"_attendance_manager SET status='"+status+"' WHERE attendance_id='"+attnId+"'");
+						}
+					}
+					else
+						db.query("UPDATE "+classGroup+"_attendance_manager SET status='"+status+"' WHERE attendance_id='"+attnId+"'");
+				}
+			
 			db.closeConnection();
 		}
 		catch(RuntimeException e)
@@ -209,6 +321,10 @@ public class AttendanceManagerController {
 		return "Status updated Successfully...";
 	}
 	
+	
+	/*
+	 * Resets a log and saves it as blob
+	 * */
 	@SuppressWarnings("deprecation")
 	@PostMapping("/reset-save")
 	public String resetAndSave(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId) throws SQLException, IOException
@@ -240,6 +356,9 @@ public class AttendanceManagerController {
 	}
 	
 	
+	/*
+	 * Creates new Attendance in manager
+	 * */
 	@PostMapping("/new")
 	public String addNewAttendance(@RequestBody HashMap<String,String> data) throws SQLException
 	{	
@@ -282,6 +401,9 @@ public class AttendanceManagerController {
 	}
 	
 	
+	/*
+	 * Edit/Updates attendance in manager
+	 * */
 	@PostMapping("/update")
 	public String updateAttendance(@RequestBody HashMap<String,String> data) throws SQLException
 	{	
@@ -313,6 +435,10 @@ public class AttendanceManagerController {
 		return "Attendance updated Successfully...";
 	}
 	
+	
+	/*
+	 * Sends enabled attendance to students portal
+	 * */
 	@GetMapping("/get-enabled")
 	public ArrayList<HashMap<String,Object>> getEnabledAttendance(@RequestParam("class_group")String classGroup,@RequestParam("register_no")String registerNo) throws SQLException
 	{
@@ -356,6 +482,10 @@ public class AttendanceManagerController {
 		}
 	}
 	
+	
+	/*
+	 * Gives attendance to students in single attendance mode
+	 * */
 	@GetMapping("/give-attendance")
 	public String giveAttendance(@RequestParam("class_group")String classGroup,@RequestParam("register_no")String registerNo,@RequestParam("attendance_id")String attnId) throws SQLException
 	{
@@ -379,6 +509,10 @@ public class AttendanceManagerController {
 		return "Something Failed...";
 	}
 	
+	
+	/*
+	 * Returns all available log files
+	 * */
 	@GetMapping("/get-log")
 	public ArrayList<HashMap<String,Object>> getAvailableLogs(@RequestParam("class_group")String classGroup) throws SQLException
 	{
