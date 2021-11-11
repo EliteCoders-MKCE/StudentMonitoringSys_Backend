@@ -114,7 +114,7 @@ public class StudentLoginController {
 					 String newPass = StudentLoginController.getAlphaNumericString(8);
 					 db.query("UPDATE student_login SET password='"+newPass+"' WHERE register_no='"+registerNo+"'");
 					 String msg ="Hi.."+get_name+" "+registerNo+",<br>\n\n\t Your new password is "+newPass+". <br> \nLogin to MKCE-SMS portal and change password from profile.<br><br>\n\n\n With kind regards,<br>\nEliteCoders Team - MKCE.";
-					 Mailer.send("sgs.alertsys@gmail.com", "simclair@sgs", mailId, "Forgot Pass @ MKCE-SMS", msg);
+					 Mailer.send("from-example@gmail.com", "your-password", mailId, "Forgot Pass @ MKCE-SMS", msg);
 					 return "Mail sent succesfully..";
 				 }
 				 else
