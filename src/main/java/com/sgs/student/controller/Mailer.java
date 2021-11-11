@@ -9,9 +9,21 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+/**
+ * 
+ * @author simclair
+ * @class Mailer
+ * Mail manager to send messages
+ */
 public class Mailer {
-	
+	/**
+	 * 
+	 * @param from
+	 * @param password
+	 * @param to
+	 * @param sub
+	 * @param msg
+	 */
 	  public static void send(String from,String password,String to,String sub,String msg){  
           //Get properties object    
           Properties props = new Properties();    

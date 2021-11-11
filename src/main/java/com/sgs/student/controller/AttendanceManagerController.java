@@ -36,7 +36,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.core.io.Resource;
-
+/**
+ * 
+ * @author simclair
+ * @class AttendanceManagerController
+ *  Main API controller for Attendance Management
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/api/attn")
@@ -45,6 +50,12 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Continuous Attendance - Counter and status manager
+	 * Args: 
+	 * 	class_group -> string
+	 * 	atten_id    -> string
+	 * 	register_no -> string
+	 * 
+	 * 	Return Type -> string
 	 * */
 	@GetMapping("/count-cont")
 	public String countContinuous(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId,@RequestParam("register_no")String registerNo) throws SQLException
@@ -89,6 +100,10 @@ public class AttendanceManagerController {
 	
 	/*
 	 *  Live attendance or Current State of attendance  will be returned
+	 * 	Args:
+	 * 		result_log -> string 
+	 * 	Return Type -> ArrayList[map<string>,<string>]
+	 * 
 	 * */
 	@GetMapping("/get-liveatn")
 	public ArrayList<HashMap<String,Object>> getAttendance(@RequestParam("result_log")String resultLog) throws SQLException
@@ -113,6 +128,10 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Delete the file log from db with file_id[date_time] given
+	 * Args:
+	 * 	class_group -> string
+	 * 	file_id -> string
+	 * Return Type -> string
 	 * */
 	@GetMapping("/delete-log")
 	public String deleteLog(@RequestParam("class_group")String classGroup,@RequestParam("file_id")String fileId) throws SQLException
@@ -136,6 +155,10 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Downloads the reqd file with given file id
+	 * Args:
+	 * 	class_group -> string
+	 * 	file_id -> string
+	 * Return type -> Bin data as ResponseEntity
 	 * */
 	@GetMapping("/download")
 	public ResponseEntity<Resource> downloadAttendanceFile(@RequestParam("class_group")String classGroup,@RequestParam("file_id")String fileId) throws SQLException, IOException
@@ -189,6 +212,11 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Deletes an attendance from attendance manager
+	 * Args: 
+	 * 	class_group -> string
+	 * 	atten_id    -> string
+	 * 
+	 * Return Type -> string
 	 * */
 	@PostMapping("/delete")
 	public String removeAtendance(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId) throws SQLException
@@ -214,6 +242,11 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Retrieves a single attendance from attendance manager
+	 * Args: 
+	 * 	class_group -> string
+	 * 	atten_id    -> string
+	 * 
+	 * Return Type -> ArrayList[Hashmap<string,object>]
 	 * */
 	@GetMapping("/get")
 	public ArrayList<HashMap<String,Object>> getAttn(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId) throws SQLException
@@ -238,6 +271,10 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Retrieves all attendances from attendance manager
+	 * Args: 
+	 * 	class_group -> string
+	 * 
+	 * Return Type -> ArrayList[Hashmap<string,object>]
 	 * */
 	@GetMapping("/get-all")
 	public ArrayList<HashMap<String,Object>> getAllAttendance(@RequestParam("class_group")String classGroup) throws SQLException
@@ -264,6 +301,11 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Updates status in manager, resets db values if reqd  if its continuous 
+	 * Args: 
+	 * 	class_group -> string
+	 * 	atten_id    -> string
+	 * 	status  -> string
+	 * Return Type -> string
 	 * */
 	@PostMapping("/update-status")
 	public String updateStatus(@RequestParam("class_group")String classGroup,@RequestParam("attn_id")String attnId,@RequestParam("status")String status) throws SQLException, ParseException
@@ -324,6 +366,10 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Resets a log and saves it as blob
+	 * Args: 
+	 * 	class_group -> string
+	 * 	atten_id    -> string
+	 * Return Type -> string
 	 * */
 	@SuppressWarnings("deprecation")
 	@PostMapping("/reset-save")
@@ -358,6 +404,9 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Creates new Attendance in manager
+	 * Args:
+	 * 	 Hashmap<string,string>
+	 * Return Type -> string
 	 * */
 	@PostMapping("/new")
 	public String addNewAttendance(@RequestBody HashMap<String,String> data) throws SQLException
@@ -403,6 +452,9 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Edit/Updates attendance in manager
+	 * Args:
+	 * 	 Hashmap<string,string>
+	 * Return Type -> string
 	 * */
 	@PostMapping("/update")
 	public String updateAttendance(@RequestBody HashMap<String,String> data) throws SQLException
@@ -438,6 +490,11 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Sends enabled attendance to students portal
+	 *  Args: 
+	 * 	class_group -> string
+	 * 	register_no -> string
+	 * 
+	 * Return Type -> ArrayList[Hashmap<string,object>]
 	 * */
 	@GetMapping("/get-enabled")
 	public ArrayList<HashMap<String,Object>> getEnabledAttendance(@RequestParam("class_group")String classGroup,@RequestParam("register_no")String registerNo) throws SQLException
@@ -485,6 +542,11 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Gives attendance to students in single attendance mode
+	 * Args: 
+	 * 	class_group -> string
+	 * 	register_no -> string
+	 * 
+	 * Return Type -> string
 	 * */
 	@GetMapping("/give-attendance")
 	public String giveAttendance(@RequestParam("class_group")String classGroup,@RequestParam("register_no")String registerNo,@RequestParam("attendance_id")String attnId) throws SQLException
@@ -512,6 +574,10 @@ public class AttendanceManagerController {
 	
 	/*
 	 * Returns all available log files
+	 * Args: 
+	 * 	class_group -> string
+	 * 
+	 * Return Type -> ArrayList[Hashmap<string,object>]
 	 * */
 	@GetMapping("/get-log")
 	public ArrayList<HashMap<String,Object>> getAvailableLogs(@RequestParam("class_group")String classGroup) throws SQLException

@@ -10,12 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.sgs.student.database.DatabaseConnector;
-
+/**
+ * 
+ * @author simclair
+ * @class StudentLoginController
+ * 
+ * Manages the student login, includes forgot and change password functionality
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("api/student")
 public class StudentLoginController {
-	
+		
+	/**
+	 * @static_method  getAlphaNumericString
+	 * @param n
+	 * @return String
+	 */
 	  static String getAlphaNumericString(int n)
 	    {
 	        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -37,6 +48,14 @@ public class StudentLoginController {
 
 	
 	// CHANGE PASSWORD METHOD - POST /reset
+	 /**
+	  * 
+	  * @param registerNo
+	  * @param oldPass
+	  * @param newPass
+	  * @return String
+	  * @throws SQLException
+	  */
 	@PostMapping("/reset-pass")
 	public String resetPass(@RequestParam("register_no")String registerNo,@RequestParam("old_pass")String oldPass,@RequestParam("new_pass")String newPass)throws SQLException
 	{
@@ -70,6 +89,14 @@ public class StudentLoginController {
 	}
 	
 	// FORGOT PASSWORD METHOD - POST /forgot
+	/**
+	 * 
+	 * @param classGroup
+	 * @param registerNo
+	 * @param mailId
+	 * @return
+	 * @throws SQLException
+	 */
 	@PostMapping("/forgot-pass")
 	public String forgotPassword(@RequestParam("class_group")String classGroup,@RequestParam("register_no")String registerNo,@RequestParam("e_mail")String mailId) throws SQLException
 	{
@@ -102,6 +129,13 @@ public class StudentLoginController {
 		return "Uncaught Exception";
 	}
 	
+	/**
+	 * 
+	 * @param registerNo
+	 * @param password
+	 * @return
+	 * @throws SQLException
+	 */
 	@PostMapping("/login")
 	public  HashMap<String,String> login(@RequestParam("register_no")String registerNo,@RequestParam("password")String password)throws SQLException
 	{
