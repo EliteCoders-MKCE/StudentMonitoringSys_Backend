@@ -16,4 +16,4 @@
 >   - NoticeBoard feature is available with priority modes.
 
 > Architecture of the System :
-> ![Alt text](sample_img/arch_img.jpg?raw=true "System Architecture")
+> ![Alt text](sample_img/arch_img.png?raw=true "System Architecture")
