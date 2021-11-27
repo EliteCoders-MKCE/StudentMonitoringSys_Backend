@@ -42,4 +42,9 @@
 > ![IMG4](sample_img/img_2.png?raw=true "")
 > ![IMG5](sample_img/img_2.png?raw=true "")
 > ![IMG6](sample_img/img_6.png?raw=true "")
-> @author George Simclair Sam 
+> ![IMG7](sample_img/img_7.png?raw=true "")
+
+
+> - Thanks for using...
+> - With regards ,
+> - @author George Simclair Sam [simclair.sgs@gmail.com] and Elitecoders team
