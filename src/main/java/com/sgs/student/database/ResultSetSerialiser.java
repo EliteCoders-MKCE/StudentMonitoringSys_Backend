@@ -6,8 +6,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-
+/**
+ * 
+ * @author simclair
+ * @class ResultSetSerialiser
+ *  used to serialise the resultset to ArrayList of HashMap
+ */
 public class ResultSetSerialiser {
+	/**
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 * @throws JSONException
+	 */
   public  ArrayList<HashMap<String,Object>> convert( ResultSet rs )
     throws SQLException, JSONException
   {
