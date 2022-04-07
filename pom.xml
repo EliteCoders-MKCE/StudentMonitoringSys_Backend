@@ -18,6 +18,18 @@
 	</properties>
 	<dependencies>
 	<dependency>
+      <groupId>com.azure</groupId>
+      <artifactId>azure-sdk-bom</artifactId>
+      <version>1.0.3</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+   <dependency>
+	<groupId>com.azure</groupId>
+	<artifactId>azure-communication-identity</artifactId>
+	<version>1.0.0</version>
+</dependency>
+	<dependency>
   <groupId>de.dentrassi.crypto</groupId>
   <artifactId>pem-keystore</artifactId>
   <version>2.2.0</version> <!-- check for most recent version -->
