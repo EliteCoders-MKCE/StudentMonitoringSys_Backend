@@ -1,32 +1,58 @@
-
-
 package com.sgs.student.controller;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgs.student.database.DatabaseConnector;
+import com.sgs.student.database.ResultSetSerialiser;
+
 
 @RestController
-
+@CrossOrigin
 @RequestMapping("api/loginstaff")
-public class StaffLoginController{
+public class StaffLoginController {
+
+	@GetMapping("/get-name")
+	public String staffName(@RequestParam("staff_id")String staffId)
+	{
+		try
+		{
+			DatabaseConnector db = new DatabaseConnector();
+			db.createConnection();
+			ResultSetSerialiser rss = new ResultSetSerialiser();
+			ArrayList<HashMap<String,Object>> arr = rss.convert(db.getValue("SELECT * FROM staff_details WHERE staff_id='"+staffId+"'"));
+			for(HashMap<String,Object> hash:arr)
+			{
+				return (String) hash.get("name");
+			}
+		}
+		catch(Exception ex)
+		{
+			return "Faculty Portal";
+		}
+		return "Faculty Portal";
+	}
+	
+	
 	@PostMapping("/login")
 	public  HashMap<String,String> login(@RequestParam("staff_id")String staffId,@RequestParam("password")String password)throws SQLException
 	{
 		DatabaseConnector db = new DatabaseConnector();
 		db.createConnection();
-		try {
-			
-			
+		try 
+		{
 			 ResultSet result =db.getValue("SELECT * FROM staff_login WHERE staff_id='"+staffId+"'");
-			 while(result.next()) {
+			 while(result.next()) 
+			 {
 				 String get_password = result.getString("password");
 				 String classgroup = result.getString("class_group");
 				 
@@ -37,17 +63,13 @@ public class StaffLoginController{
 					 hash.put("staffId",staffId);
 					 hash.put("classGroup", classgroup);
 					 hash.put("loginStatus","true");
-					return hash;
+					 return hash;
 				 } 
-					 
-					 
 			 }
 			 		
 			
 		}catch(RuntimeException e) {
-			return null;
-			
-		}
+			return null;}
 		finally {
 			db.closeConnection();
 		}
@@ -58,4 +80,5 @@ public class StaffLoginController{
 		
 		
 	}
+	
 }
