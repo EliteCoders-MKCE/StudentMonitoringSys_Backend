@@ -15,12 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sgs.student.database.DatabaseConnector;
 import com.sgs.student.database.ResultSetSerialiser;
 
-
+/**
+ * 
+ * @author simclair
+ * @class StaffLoginController
+ * 
+ * Class for staff login management and name resolution
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("api/loginstaff")
 public class StaffLoginController {
-
+	
+	/**
+	 * 
+	 * @param staffId
+	 * @return
+	 */
 	@GetMapping("/get-name")
 	public String staffName(@RequestParam("staff_id")String staffId)
 	{
@@ -42,7 +53,13 @@ public class StaffLoginController {
 		return "Faculty Portal";
 	}
 	
-	
+	/***
+	 * 
+	 * @param staffId
+	 * @param password
+	 * @return
+	 * @throws SQLException
+	 */
 	@PostMapping("/login")
 	public  HashMap<String,String> login(@RequestParam("staff_id")String staffId,@RequestParam("password")String password)throws SQLException
 	{

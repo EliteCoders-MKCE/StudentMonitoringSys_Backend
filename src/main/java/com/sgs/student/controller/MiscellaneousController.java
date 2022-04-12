@@ -18,11 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sgs.student.database.DatabaseConnector;
 import com.sgs.student.database.ResultSetSerialiser;
 
+/***
+ * 
+ * @author simclair
+ * @class MiscellaneousController 
+ * 
+ *	Misc controller for Chat management
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/api/misc")
 public class MiscellaneousController {
-
+	
+	/**
+	 * 
+	 * @param classGroup
+	 * @return ArrayList<HashMap<String,Object>>
+	 * @throws SQLException
+	 */
 	@GetMapping("/get-chat")
 	public ArrayList<HashMap<String,Object>> getChat(@RequestParam("class_group")String classGroup) throws SQLException
 	{
@@ -43,6 +56,15 @@ public class MiscellaneousController {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param classGroup
+	 * @param message
+	 * @param sender
+	 * @param priority
+	 * @return String
+	 * @throws SQLException
+	 */
 	@PostMapping("/save-message")
 	public String saveNewMessage(@RequestParam("class_group")String classGroup,@RequestParam("message")String message,@RequestParam("sender")String sender,@RequestParam("priority")String priority) throws SQLException
 	{
@@ -64,6 +86,13 @@ public class MiscellaneousController {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param classGroup
+	 * @param messageId
+	 * @return String
+	 * @throws SQLException
+	 */
 	@GetMapping("/delete-msg")
 	public String deleteMessage(@RequestParam("class_group")String classGroup,@RequestParam("message_id")String messageId) throws SQLException
 	{
