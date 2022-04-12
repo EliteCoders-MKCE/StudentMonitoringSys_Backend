@@ -24,7 +24,7 @@ public class DatabaseConnector {
 	 */
 	public void createConnection() throws SQLException
 	{
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/student_monitoring_system_db", "root", "simclair");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/student_monitoring_system_db", "root", "sasisk");
 	}
 	/**
 	 * @method query
