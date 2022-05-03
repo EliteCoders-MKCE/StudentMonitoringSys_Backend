@@ -6,12 +6,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -111,4 +117,71 @@ public class MiscellaneousController {
 			db.closeConnection();
 		}
 	}
+	
+	/**
+	 * 
+	 * @param registerNo
+	 * @param data
+	 * @return
+	 * @throws SQLException
+	 */
+	/*@PostMapping("/store-model")
+	public String saveModel(@RequestParam("register_no") String registerNo,@RequestBody ArrayList<HashMap<String,Object>> data) throws SQLException
+	{	
+		DatabaseConnector db = new DatabaseConnector();
+		try
+		{
+			db.createConnection();
+			db.query("INSERT INTO face_model VALUES('"+registerNo+"','"+data+"')");
+			return "Successfully added Face model..";
+		}
+		catch(RuntimeException e)
+		{
+			return "Exception occured..";
+		}
+		finally {
+			db.closeConnection();
+		}
+	}*/
+	
+	@GetMapping("/get-model")
+	public String getModel(@RequestParam("register_no") String registerNo) throws SQLException {
+		DatabaseConnector db = new DatabaseConnector();
+		try
+		{
+			db.createConnection();
+			ResultSet result = db.getValue("SELECT model FROM face_model WHERE register_no='"+registerNo+"'");
+			ResultSetSerialiser rss = new ResultSetSerialiser();
+			return  (String) (rss.convert(result)).get(0).get("model");
+			
+		}
+		catch(RuntimeException e)
+		{
+			return "Invalid user model";
+		}
+		finally {
+			db.closeConnection();
+		}
+	}
+	
+	@PostMapping("/store-model")
+	public String storeModel(@RequestParam("register_no") String registerNo,@RequestBody String data) throws SQLException
+	{	
+		DatabaseConnector db = new DatabaseConnector();
+		try
+		{
+			db.createConnection();
+			db.query("INSERT INTO face_model VALUES('"+registerNo+"','"+data+"') ON DUPLICATE KEY UPDATE model='"+data+"'");
+			return "Model Stored Successfully";
+		}
+		catch(RuntimeException e)
+		{
+			return "Model Failed to Save in DB";
+		}
+		finally {
+			db.closeConnection();
+		}
+	}
+	
+	
 }

@@ -24,4 +24,10 @@ public class ViewController {
 		 return "index.html";
 	 }
 	 
+	 @RequestMapping(value = "/stdreg")
+	 public String registerStudent()
+	 {
+		 return "face.html";
+	 }
+	 
 }

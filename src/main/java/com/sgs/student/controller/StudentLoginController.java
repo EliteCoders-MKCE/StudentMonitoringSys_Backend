@@ -113,8 +113,10 @@ public class StudentLoginController {
 				 {
 					 String newPass = StudentLoginController.getAlphaNumericString(8);
 					 db.query("UPDATE student_login SET password='"+newPass+"' WHERE register_no='"+registerNo+"'");
-					 String msg ="Hi.."+get_name+" "+registerNo+",<br>\n\n\t Your new password is "+newPass+". <br> \nLogin to MKCE-SMS portal and change password from profile.<br><br>\n\n\n With kind regards,<br>\nEliteCoders Team - MKCE.";
-					 Mailer.send("sgs.alertsys@gmail.com", "simclair@sgs", mailId, "Forgot Pass @ MKCE-SMS", msg);
+					 String msg ="Hi.."+get_name+" "+registerNo+",\n\n\n\t Your new password is "+newPass+". \n \nLogin to MKCE-SMS portal and change password from profile.\n\n\n\n\n With kind regards,\n\nEliteCoders Team - MKCE.";
+					 Mailer mail = new Mailer();
+					 mail.sendMail(mailId,"Forgot Pass @ HEIMS-MKCE-SMS", msg);
+					 //Mailer.send("sgs.alertsys@gmail.com", "simclair@ecs", mailId, "Forgot Pass @ MKCE-SMS", msg);
 					 return "Mail sent succesfully..";
 				 }
 				 else
