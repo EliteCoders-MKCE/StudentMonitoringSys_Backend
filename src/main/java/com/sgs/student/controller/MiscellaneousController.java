@@ -111,4 +111,23 @@ public class MiscellaneousController {
 			db.closeConnection();
 		}
 	}
+	
+	@GetMapping("/reset-msg")
+	public String resetMessage(@RequestParam("class_group")String classGroup)throws SQLException{
+		
+		DatabaseConnector db = new DatabaseConnector();
+		try
+		{
+			db.createConnection();
+			db.query("DELETE FROM "+classGroup+"_chat");
+			return "Messages Deleted..";
+		}
+		catch(RuntimeException e)
+		{
+			return "Exception occured..";
+		}
+		finally {
+			db.closeConnection();
+		}
+	}
 }

@@ -426,8 +426,22 @@ public class AttendanceManagerController {
 			DatabaseConnector db = new DatabaseConnector();
 			db.createConnection();
 			//Autogenerate Atnn Id
+			ResultSet count = db.getValue("SELECT * FROM "+classGroup+"_attendance_manager");
+			ResultSetSerialiser rss = new ResultSetSerialiser();
+			ArrayList<HashMap<String,Object>> arrlist=rss.convert(count);
+			String newId;
+			
+			
+			if(arrlist.size()==0) {
+				newId = classGroup+"-ATN101";
+				
+				newId = newId.toUpperCase().replace("_","-");
+				
+			}
+			else {
 			ResultSet rslt = db.getValue("SELECT attendance_id FROM "+classGroup+"_attendance_manager ORDER BY attendance_id DESC limit 1");
-			String newId="";
+			newId="";
+			
 			while(rslt.next())
 			{
 				String tid = rslt.getString("attendance_id");
@@ -436,8 +450,9 @@ public class AttendanceManagerController {
 				String aframe = tid.substring(0,tid.length()-3);
 				newId=aframe+aid;
 				
+			} 
 			}
-			System.out.println("New Attendance Id generated - "+newId);
+			
 			//insertion
 			db.query("INSERT INTO "+classGroup+"_attendance_manager VALUES ('"+newId+"','"+attnTitle+"','"+attnDesc+"','"+attnType+"','"+attnDate+"','"+attnStart+"','"+
 									attnEnd+"','"+attnResult+"','"+attnStatus+"','"+staffId+"')");
